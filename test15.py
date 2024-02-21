@@ -10,6 +10,7 @@ def parse_real_time_data(data, historic_data):
     lines = data.strip().split('\n')
     table_data = []
     trend = deque()
+    symbol = None
     for line in lines:
         if line.startswith('!'):
             _, timestamp = line.split(',')
