@@ -10,9 +10,6 @@ def parse_real_time_data(data, historic_data):
     lines = data.strip().split('\n')
     table_data = []
     trend = deque()
-    symbol = None
-    last_price = 0
-    change = 0
     for line in lines:
         if line.startswith('!'):
             _, timestamp = line.split(',')
@@ -33,14 +30,11 @@ def parse_real_time_data(data, historic_data):
             else: 
                 historic_data[symbol] = deque([float(last_price)])
 
-            # Avoid division by zero
-            percent_change = (change / float(last_price)) * 100 if float(last_price) != 0 else 0
-            
             table_data.append({
                     'Symbol' : symbol,
                     'Price' : float(last_price),
                     'Change': change,
-                    '% Change': percent_change,
+                    '% Change': (change / float(last_price)) * 100,
                     'Trend': list(trend),
                 })
     return table_data
@@ -63,8 +57,6 @@ def get_real_time_data(channel, historic_data):
     table_data = parse_real_time_data(data, historic_data)
 
     return table_data
-
-# Other functions remain the same...
 
 def main():
 
