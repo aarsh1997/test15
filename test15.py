@@ -17,7 +17,7 @@ def parse_real_time_data(data, historic_data):
         else:
             line_parts = line.split(',')
             if len(line_parts) >= 3:
-                symbol, last_price, _ = line_parts
+                symbol, last_price, _ = line.split(',')
                 change = 0
             
             if symbol in historic_data:
