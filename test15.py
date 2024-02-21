@@ -33,11 +33,14 @@ def parse_real_time_data(data, historic_data):
             else: 
                 historic_data[symbol] = deque([float(last_price)])
 
+            # Avoid division by zero
+            percent_change = (change / float(last_price)) * 100 if float(last_price) != 0 else 0
+            
             table_data.append({
                     'Symbol' : symbol,
                     'Price' : float(last_price),
                     'Change': change,
-                    '% Change': (change / float(last_price)) * 100,
+                    '% Change': percent_change,
                     'Trend': list(trend),
                 })
     return table_data
@@ -61,19 +64,7 @@ def get_real_time_data(channel, historic_data):
 
     return table_data
 
-#def get_dummy_data():
-    currentDateAndTime = datetime.now()
-    GBPUSDVal = uniform(1, 2)
-    EURUSDVal = uniform(1, 1.5)
-    USDCHFVal = uniform(0, 1.5)
-    return "!" + currentDateAndTime.strftime("%Y%m%d,%H:%M:%S") + "\nGBPUSD," + str(GBPUSDVal) + ",1.2616\nEURUSD," + str(EURUSDVal) + ",1.0881\nUSDCHF," + str(USDCHFVal) + ",0.87647"
-
-#def get_dummy_real_time_data(historic_data):
-    data = get_dummy_data()
-
-    table_data = parse_real_time_data(data, historic_data)
-
-    return table_data
+# Other functions remain the same...
 
 def main():
 
