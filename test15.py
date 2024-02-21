@@ -11,6 +11,7 @@ def parse_real_time_data(data, historic_data):
     table_data = []
     trend = deque()
     symbol = None
+    last_price = None
     for line in lines:
         if line.startswith('!'):
             _, timestamp = line.split(',')
