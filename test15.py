@@ -11,32 +11,34 @@ def parse_real_time_data(data, historic_data):
     table_data = []
     trend = deque()
     for line in lines:
-        if line.startswith('!'):
-            _, timestamp = line.split(',')
-        else:
-            line_parts = line.split(',')
-            if len(line_parts) >= 3:
-                symbol, last_price, _ = line.split(',')
+            if line.startswith('!'):
+                _, timestamp = line.split(',')
+            else:
+                try:
+                     symbol, last_price, _ = line.split(',')
+                except ValueError:
+                     continue
                 change = 0
-            
-            if symbol in historic_data:
-                trend = historic_data[symbol]
-                change = float(last_price) - trend[-1]
-                trend.append(float(last_price))
-                if len(trend) > 25:
-                    trend.popleft()
 
-                historic_data[symbol] = trend
-            else: 
-                historic_data[symbol] = deque([float(last_price)])
+                if symbol in historic_data:
+                    trend = historic_data[symbol]
+                    change = float(last_price) - trend[-1]
+                    trend.append(float(last_price))
+                    if len(trend) > 25:
+                        trend.popleft()
 
-            table_data.append({
-                    'Symbol' : symbol,
-                    'Price' : float(last_price),
-                    'Change': change,
-                    '% Change': (change / float(last_price)) * 100,
-                    'Trend': list(trend),
-                })
+                    historic_data[symbol] = trend
+                else: 
+                    historic_data[symbol] = deque([float(last_price)])
+
+                table_data.append({
+                        'Symbol' : symbol,
+                        'Price' : float(last_price),
+                        'Change': change,
+                        '% Change': (change / float(last_price)) * 100,
+                        'Trend': list(trend),
+                    })
+
     return table_data
 
 def connect_ssh_agent(): 
@@ -53,6 +55,20 @@ def connect_ssh_agent():
 
 def get_real_time_data(channel, historic_data):
     data = channel.recv(1024).decode('ascii')
+
+    table_data = parse_real_time_data(data, historic_data)
+
+    return table_data
+
+#def get_dummy_data():
+    currentDateAndTime = datetime.now()
+    GBPUSDVal = uniform(1, 2)
+    EURUSDVal = uniform(1, 1.5)
+    USDCHFVal = uniform(0, 1.5)
+    return "!" + currentDateAndTime.strftime("%Y%m%d,%H:%M:%S") + "\nGBPUSD," + str(GBPUSDVal) + ",1.2616\nEURUSD," + str(EURUSDVal) + ",1.0881\nUSDCHF," + str(USDCHFVal) + ",0.87647"
+
+#def get_dummy_real_time_data(historic_data):
+    data = get_dummy_data()
 
     table_data = parse_real_time_data(data, historic_data)
 
