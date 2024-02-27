@@ -60,20 +60,6 @@ def get_real_time_data(channel, historic_data):
 
     return table_data
 
-#def get_dummy_data():
-    currentDateAndTime = datetime.now()
-    GBPUSDVal = uniform(1, 2)
-    EURUSDVal = uniform(1, 1.5)
-    USDCHFVal = uniform(0, 1.5)
-    return "!" + currentDateAndTime.strftime("%Y%m%d,%H:%M:%S") + "\nGBPUSD," + str(GBPUSDVal) + ",1.2616\nEURUSD," + str(EURUSDVal) + ",1.0881\nUSDCHF," + str(USDCHFVal) + ",0.87647"
-
-#def get_dummy_real_time_data(historic_data):
-    data = get_dummy_data()
-
-    table_data = parse_real_time_data(data, historic_data)
-
-    return table_data
-
 def main():
 
     unique_symbols = set()
@@ -85,7 +71,6 @@ def main():
 
     while True:
         new_data = get_real_time_data(channel, st.session_state)
-        #new_data = get_dummy_real_time_data(st.session_state)
 
         if new_data:
             table_data = pd.DataFrame(new_data) 
